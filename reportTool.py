@@ -86,51 +86,57 @@ WHERE (dailyErrors.items::numeric/dailyOKs.items) > 0.01;
 """
 
 
+def connect(database_name=DBNAME):
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = db.cursor()
+        return db, cursor
+    except:
+        print("Connection Error. Please retry.")
+
+
 def top3Articles():
     """Return the top three articles with the most views"""
-    # connect to the database
-    conn = psycopg2.connect(database=DBNAME)
-    # create a cursor
-    curr = conn.cursor()
-    curr.execute(top3ArticlesQuery)
-    return curr.fetchall()
-    conn.close()
+    # connect to the database and create a cursor
+    db, cursor = connect()
+    cursor.execute(top3ArticlesQuery)
+    return cursor.fetchall()
+    db.close()
 
 
 def topAuthors():
     """Return the list of the authors whose articles had the most views"""
-    # connect to the database
-    conn = psycopg2.connect(database=DBNAME)
-    # create a cursor
-    curr = conn.cursor()
-    curr.execute(topAuthorsQuery)
-    return curr.fetchall()
-    conn.close()
+    # connect to the database and create a cursor
+    db, cursor = connect()
+    cursor.execute(topAuthorsQuery)
+    return cursor.fetchall()
+    db.close()
 
 
 def errPercentage():
     """Return the days in which the error percentage is higher than 1.0"""
-    # connect to the database
-    conn = psycopg2.connect(database=DBNAME)
-    # create a cursor
-    curr = conn.cursor()
-    curr.execute(errPercentageQuery)
-    return curr.fetchall()
-    conn.close()
+    # connect to the database and create the cursor
+    db, cursor = connect()
+    cursor.execute(errPercentageQuery)
+    return cursor.fetchall()
+    db.close()
 
-print("---------------THE QUERY RESULTS---------------")
-print("")
-print("1. What are the most popular three articles of all time?")
-print("")
-for article in top3Articles():
-    print(article[0] + " - " + str(article[1]) + " views")
-print("")
-print("2. Who are the most popular article authors of all time? ")
-print("")
-for author in topAuthors():
-    print(author[0] + " - " + str(author[1]) + " views")
-print("")
-print("3. On which days did more than 1% of requests lead to errors?")
-print("")
-for day in errPercentage():
-    print(str(day[0]) + " - " + str(day[1]) + "% errors")
+
+if __name__ == "__main__":
+
+    print("---------------THE QUERY RESULTS---------------")
+    print("")
+    print("1. What are the most popular three articles of all time?")
+    print("")
+    for article in top3Articles():
+        print(article[0] + " - " + str(article[1]) + " views")
+    print("")
+    print("2. Who are the most popular article authors of all time? ")
+    print("")
+    for author in topAuthors():
+        print(author[0] + " - " + str(author[1]) + " views")
+    print("")
+    print("3. On which days did more than 1% of requests lead to errors?")
+    print("")
+    for day in errPercentage():
+        print(str(day[0]) + " - " + str(day[1]) + "% errors")

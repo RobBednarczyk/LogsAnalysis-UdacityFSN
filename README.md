@@ -13,7 +13,10 @@ inside the "News" database. In particular:
 
 In order to run the program users must install the PostgreSQL database
 server on their computer. Next they need to load the database which is included
-in the newsdata.sql file.
+in the newsdata.sql file. Users can unzip the file from the newsdata.zip folder.
+Running the command "psql -d news -f newsdata.sql" will connect to the database
+server and run the script in the "newsdata.sql" file creating and populating
+tables in the databse.
 
 ## Database modifications
 
